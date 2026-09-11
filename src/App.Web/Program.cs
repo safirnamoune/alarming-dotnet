@@ -1,4 +1,4 @@
-using App.Core.Abstractions;
+﻿using App.Core.Abstractions;
 using App.Core.Services;
 using App.Core.Session;
 using App.Data.Queries;
@@ -51,7 +51,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseAntiforgery();
 
-app.MapRazorComponents<App>()
+app.MapRazorComponents<AppRoot>()
    .AddInteractiveServerRenderMode();
 
 app.Run();
+
