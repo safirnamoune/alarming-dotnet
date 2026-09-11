@@ -1,0 +1,23 @@
+@use "@angular/material" as mat;
+
+html {
+    @include mat.theme((
+        color: (
+            primary: mat.$red-palette,
+            tertiary: mat.$rose-palette,
+            theme-type: light
+        ),
+        typography: (
+            brand-family: "Plus Jakarta Sans",
+            plain-family: "Plus Jakarta Sans"
+        ),
+        density: 0
+    ));
+
+    // La palette rouge de Material n'est pas exactement la charte Djezzy :
+    // on force les jetons de couleur primaire sur le #C00000 officiel.
+    --mat-sys-primary: #C00000;
+    --mat-sys-on-primary: #FFFFFF;
+    --mat-sys-primary-container: #FFDDDD;
+    --mat-sys-on-primary-container: #400000;
+}

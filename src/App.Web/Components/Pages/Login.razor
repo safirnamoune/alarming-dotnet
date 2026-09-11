@@ -7,20 +7,40 @@
 
 <div class="auth-shell">
     <div class="auth-card">
-        <div class="auth-card__bar"></div>
-        <div class="auth-card__body">
 
-            <div class="auth-brand">
-                <div class="auth-brand__mark">A</div>
-                <div>
-                    <div class="auth-title">Alarming</div>
-                    <div class="auth-sub">@T("Supervision et gestion des incidents reseau", "Network incident monitoring and management")</div>
+        <aside class="auth-aside">
+            <div class="auth-aside__logo">
+                <img src="img/netstability-white.png" alt="Net Stability" />
+            </div>
+            <div>
+                <div class="auth-aside__title">Alarming</div>
+                <div class="auth-aside__text">
+                    @T("Supervision temps reel et gestion des incidents du reseau.",
+                       "Real-time monitoring and network incident management.")
                 </div>
             </div>
+            <div>
+                <div class="auth-aside__meta">
+                    <span>@T("Supervision", "Monitoring")</span>
+                    <span>@T("Incidents", "Incidents")</span>
+                    <span>@T("Ticketing", "Ticketing")</span>
+                </div>
+                <div class="auth-aside__corp">
+                    <span class="auth-aside__corp-label">@T("Un service", "A service by")</span>
+                    <span class="auth-aside__chip">
+                        <img src="img/djezzy.png" alt="Djezzy" />
+                    </span>
+                </div>
+            </div>
+        </aside>
+
+        <main class="auth-main">
 
             @if (_step == 1)
             {
-                <div class="auth-step">@T("Connexion", "Sign in")</div>
+                <div class="auth-eyebrow">@T("Acces securise", "Secure access")</div>
+                <div class="auth-heading">@T("Connexion", "Sign in")</div>
+                <div class="auth-sub">@T("Identifiez-vous pour acceder a la supervision.", "Sign in to access the monitoring console.")</div>
 
                 <MudTextField @bind-Value="_login"
                               Label="@T("Utilisateur", "User")"
@@ -29,7 +49,7 @@
                               Immediate="true"
                               Disabled="_busy"
                               Adornment="Adornment.Start"
-                              AdornmentIcon="@Icons.Material.Outlined.Person"
+                              AdornmentIcon="@Icons.Material.Outlined.PersonOutline"
                               OnKeyDown="OnKeyDown"
                               Class="mb-4" />
 
@@ -74,7 +94,9 @@
             }
             else
             {
-                <div class="auth-step">@T("Perimetre", "Scope")</div>
+                <div class="auth-eyebrow">@T("Etape 2 sur 2", "Step 2 of 2")</div>
+                <div class="auth-heading">@T("Perimetre", "Scope")</div>
+                <div class="auth-sub">@T("Choisissez le perimetre et le groupe de travail.", "Choose your scope and working group.")</div>
 
                 <MudSelect Value="_scope" T="string"
                            ValueChanged="OnScopeChangedAsync"
@@ -118,14 +140,14 @@
 
             @if (_error is not null)
             {
-                <MudAlert Severity="Severity.Error" Dense="true" Class="mt-4" Style="border-radius:10px;">
+                <MudAlert Severity="Severity.Error" Dense="true" Class="mt-4" Style="border-radius:12px;">
                     @_error
                 </MudAlert>
             }
 
             <div class="auth-footer">Alarming &middot; migration .NET 9 &middot; phase 1</div>
 
-        </div>
+        </main>
     </div>
 </div>
 
@@ -142,7 +164,6 @@
     private bool _busy;
     private bool _showPassword;
 
-    // Remplace le mecanisme multilingue natif de WebDev (Nation()).
     private string T(string fr, string en) => _lang == "fr" ? fr : en;
 
     private async Task SubmitAsync()
@@ -230,3 +251,4 @@
             await SubmitAsync();
     }
 }
+
