@@ -1,0 +1,210 @@
+@* ------------------------------------------------------------------
+   Conversion iso-fonctionnelle de PAGE_Splash.
+
+   Les "plans" de CELL_Connect deviennent deux etats du composant :
+     plan 1 -> saisie du login
+     plan 2 -> selection du perimetre (scope) puis du groupe
+   ------------------------------------------------------------------ *@
+@page "/"
+@page "/login"
+@layout EmptyLayout
+@inject AuthService Auth
+@inject UserSession Session
+@inject NavigationManager Nav
+
+<MudPaper Class="pa-8 mx-auto mt-16" MaxWidth="420px" Elevation="4">
+
+    @if (_step == 1)
+    {
+        <MudText Typo="Typo.h5" Class="mb-6">Connexion</MudText>
+
+        @* SAI_UtilisateurCode *@
+        <MudTextField @bind-Value="_login"
+                      Label="Utilisateur"
+                      Variant="Variant.Outlined"
+                      Immediate="true"
+                      OnKeyDown="OnKeyDown"
+                      Class="mb-3" />
+
+        @* SAI_UtilisateurPassword *@
+        <MudTextField @bind-Value="_password"
+                      Label="Mot de passe"
+                      InputType="InputType.Password"
+                      Variant="Variant.Outlined"
+                      Immediate="true"
+                      OnKeyDown="OnKeyDown"
+                      Class="mb-3" />
+
+        @* COMBO_Language *@
+        <MudSelect @bind-Value="_lang" T="string"
+                   Label="Langue"
+                   Variant="Variant.Outlined"
+                   Class="mb-6">
+            <MudSelectItem Value="@("fr")">Français</MudSelectItem>
+            <MudSelectItem Value="@("en")">English</MudSelectItem>
+        </MudSelect>
+
+        @* BTN_Submit_1st *@
+        <MudButton OnClick="SubmitAsync"
+                   Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   FullWidth="true"
+                   Disabled="_busy">
+            @if (_busy)
+            {
+                <MudProgressCircular Size="Size.Small" Indeterminate="true" Class="mr-2" />
+                <span>Connexion...</span>
+            }
+            else
+            {
+                <span>Se connecter</span>
+            }
+        </MudButton>
+    }
+    else
+    {
+        <MudText Typo="Typo.h6" Class="mb-6">Choisissez votre périmètre</MudText>
+
+        @* COMBO_Scope *@
+        <MudSelect Value="_scope" T="string"
+                   ValueChanged="OnScopeChangedAsync"
+                   Label="Scope"
+                   Variant="Variant.Outlined"
+                   Class="mb-3">
+            @foreach (var s in _scopes)
+            {
+                <MudSelectItem Value="@s">@s</MudSelectItem>
+            }
+        </MudSelect>
+
+        @* COMBO_Group - grisee quand un seul resultat (iso WebDev) *@
+        <MudSelect @bind-Value="_group" T="string"
+                   Label="Groupe"
+                   Variant="Variant.Outlined"
+                   Disabled="_groups.Count <= 1"
+                   Class="mb-6">
+            @foreach (var g in _groups)
+            {
+                <MudSelectItem Value="@g">@g</MudSelectItem>
+            }
+        </MudSelect>
+
+        @* BTN_Submit_2nd *@
+        <MudButton OnClick="ConfirmScopeAsync"
+                   Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   FullWidth="true"
+                   Disabled="_busy">
+            Continuer
+        </MudButton>
+
+        @* BTN_Return *@
+        <MudButton OnClick="BackToLogin"
+                   Variant="Variant.Text"
+                   FullWidth="true"
+                   Class="mt-2">
+            Retour
+        </MudButton>
+    }
+
+    @if (_error is not null)
+    {
+        <MudAlert Severity="Severity.Error" Class="mt-4">@_error</MudAlert>
+    }
+
+</MudPaper>
+
+@code {
+    private int _step = 1;                    // CELL_Connect..Plan
+    private string _login = "";
+    private string _password = "";
+    private string _lang = "fr";
+    private string _scope = "";
+    private string _group = "";
+    private List<string> _scopes = [];
+    private List<string> _groups = [];
+    private string? _error;
+    private bool _busy;
+
+    // Equivalent de "Clic sur BTN_Submit_1st (serveur)"
+    private async Task SubmitAsync()
+    {
+        _busy = true;
+        _error = null;
+
+        try
+        {
+            Session.Language = _lang;
+            var result = await Auth.LoginAsync(_login, _password);
+
+            switch (result.Outcome)
+            {
+                case LoginOutcome.Success:
+                    Nav.NavigateTo("/prince");
+                    break;
+
+                case LoginOutcome.NeedsScopeSelection:
+                    _scopes = result.Scopes ?? [];
+                    _scope  = _scopes.FirstOrDefault() ?? "";
+                    await LoadGroupsAsync();
+                    _step = 2;      // CELL_Connect..Plan = 2
+                    break;
+
+                default:
+                    _error = result.Message;
+                    break;
+            }
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+    // Equivalent de "A chaque modification de COMBO_Scope (serveur)"
+    // qui appelle init_scopes_departements()
+    private async Task OnScopeChangedAsync(string scope)
+    {
+        _scope = scope;
+        await LoadGroupsAsync();
+    }
+
+    private async Task LoadGroupsAsync()
+    {
+        _groups = await Auth.GetDepartmentsAsync(_scope);
+        _group  = _groups.FirstOrDefault() ?? "";
+    }
+
+    // Equivalent de "Clic sur BTN_Submit_2nd (serveur)"
+    private async Task ConfirmScopeAsync()
+    {
+        _busy = true;
+        try
+        {
+            await Auth.ConfirmScopeAsync(_scope, _group);
+
+            // Mise a blanc des champs, comme dans le WebDev
+            _login = "";
+            _password = "";
+
+            Nav.NavigateTo("/prince");
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+    // Equivalent de "Clic sur BTN_Return" : CELL_Connect..Plan = 1
+    private void BackToLogin()
+    {
+        _step = 1;
+        _error = null;
+    }
+
+    private async Task OnKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter" && !_busy)
+            await SubmitAsync();
+    }
+}

@@ -1,0 +1,21 @@
+@inherits LayoutComponentBase
+@inject UserSession Session
+
+@* Equivalent du modele de page WebDev (PAGEMOD_*) *@
+<MudLayout>
+    <MudAppBar Elevation="1">
+        <MudText Typo="Typo.h6">Alarming</MudText>
+        <MudSpacer />
+        @if (Session.IsAuthenticated)
+        {
+            <MudText Typo="Typo.body2" Class="mr-4">
+                @Session.UserName — @Session.ScopeName / @Session.TeamName
+            </MudText>
+        }
+    </MudAppBar>
+    <MudMainContent>
+        <MudContainer MaxWidth="MaxWidth.False" Class="pa-4">
+            @Body
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>

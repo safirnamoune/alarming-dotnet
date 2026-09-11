@@ -1,0 +1,30 @@
+@* ------------------------------------------------------------------
+   PAGE_Prince : ecran d'accueil reel apres connexion.
+   PageAffiche(PAGE_Prince) termine les deux branches du login WebDev.
+
+   A CONVERTIR : 28 champs, 70 lignes de WLangage. Prochaine etape.
+   ------------------------------------------------------------------ *@
+@page "/prince"
+@inject UserSession Session
+
+<MudText Typo="Typo.h5" Class="mb-4">Accueil</MudText>
+
+<MudAlert Severity="Severity.Info" Class="mb-4">
+    Écran à convertir. La connexion fonctionne : la session est alimentée.
+</MudAlert>
+
+<MudSimpleTable Dense="true" Style="max-width:600px">
+    <tbody>
+        <tr><td>UserCode</td><td>@Session.UserCode</td></tr>
+        <tr><td>UserName</td><td>@Session.UserName</td></tr>
+        <tr><td>UserLogin</td><td>@Session.UserLogin</td></tr>
+        <tr><td>UserMail</td><td>@Session.UserMail</td></tr>
+        <tr><td>UserAgent</td><td>@Session.UserAgent</td></tr>
+        <tr><td>IsAdmin</td><td>@Session.IsAdmin</td></tr>
+        <tr><td>ScopeId / ScopeName</td><td>@Session.ScopeId / @Session.ScopeName</td></tr>
+        <tr><td>TeamId / TeamName</td><td>@Session.TeamId / @Session.TeamName</td></tr>
+        <tr><td>SessionId (audit_access)</td><td>@Session.SessionId</td></tr>
+        <tr><td>Langue</td><td>@Session.Language</td></tr>
+        <tr><td>Clé publique RSA</td><td>@(Session.UserPublicKey is null ? "absente" : "chargée")</td></tr>
+    </tbody>
+</MudSimpleTable>
