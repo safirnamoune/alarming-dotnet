@@ -23,3 +23,20 @@ html, body {
 
 * { font-family: inherit; }
 
+
+/* ---- Mode sombre : le rouge #C00000 est trop dense sur fond noir,
+   il est eclairci pour rester lisible et conforme aux contrastes. ---- */
+html.sombre {
+    --brand: #FF4D4D;
+    --brand-dark: #C00000;
+    --brand-light: #FF8080;
+    --ink: #ECEDEE;
+    --muted: #9BA1A8;
+    --bg: #0E1013;
+    --surface: #16191D;
+    --line: #2A2F36;
+}
+
+html {
+    --surface: #FFFFFF;
+}

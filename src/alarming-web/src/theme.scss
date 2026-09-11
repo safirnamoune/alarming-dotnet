@@ -21,3 +21,22 @@ html {
     --mat-sys-primary-container: #FFDDDD;
     --mat-sys-on-primary-container: #400000;
 }
+html.sombre {
+    @include mat.theme((
+        color: (
+            primary: mat.$red-palette,
+            tertiary: mat.$rose-palette,
+            theme-type: dark
+        ),
+        typography: (
+            brand-family: "Plus Jakarta Sans",
+            plain-family: "Plus Jakarta Sans"
+        ),
+        density: 0
+    ));
+
+    --mat-sys-primary: #FF4D4D;
+    --mat-sys-on-primary: #2A0000;
+    --mat-sys-primary-container: #5A0000;
+    --mat-sys-on-primary-container: #FFDDDD;
+}
