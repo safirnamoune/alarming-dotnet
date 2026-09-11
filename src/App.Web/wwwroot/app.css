@@ -1,3 +1,187 @@
+:root {
+    --brand:        #C00000;   /* RVB 192 0 0 */
+    --brand-dark:   #8F0000;
+    --brand-light:  #E23B3B;
+    --ink:          #14161A;
+    --muted:        #6B7280;
+    --surface:      #FFFFFF;
+    --bg:           #F4F5F7;
+    --line:         #E5E7EB;
+}
+
 html, body {
-    font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-family: "Segoe UI Variable Display", "Segoe UI", Inter, Roboto,
+                 "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ------------------------------------------------------------------
+   Ecran de connexion
+   ------------------------------------------------------------------ */
+
+.auth-shell {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background:
+        radial-gradient(1100px 520px at 12% -10%, rgba(192, 0, 0, .10), transparent 60%),
+        radial-gradient(900px 480px at 105% 110%, rgba(27, 29, 33, .10), transparent 55%),
+        linear-gradient(180deg, #FAFAFB 0%, #F1F2F5 100%);
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 440px;
+    background: var(--surface);
+    border: 1px solid rgba(17, 17, 26, .05);
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow:
+        0 24px 64px rgba(17, 17, 26, .12),
+        0 2px 8px rgba(17, 17, 26, .06);
+    animation: card-in .45s cubic-bezier(.22, .61, .36, 1) both;
+}
+
+@keyframes card-in {
+    from { opacity: 0; transform: translateY(14px) scale(.985); }
+    to   { opacity: 1; transform: none; }
+}
+
+.auth-card__bar {
+    height: 5px;
+    background: linear-gradient(90deg, var(--brand) 0%, var(--brand-light) 55%, var(--brand-dark) 100%);
+}
+
+.auth-card__body { padding: 38px 36px 30px; }
+
+.auth-brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 30px;
+}
+
+.auth-brand__mark {
+    width: 46px;
+    height: 46px;
+    flex: 0 0 46px;
+    border-radius: 13px;
+    background: linear-gradient(135deg, var(--brand) 0%, var(--brand-dark) 100%);
+    color: #FFF;
+    display: grid;
+    place-items: center;
+    font-size: 21px;
+    font-weight: 700;
+    letter-spacing: -.02em;
+    box-shadow: 0 8px 18px rgba(192, 0, 0, .32);
+}
+
+.auth-title {
+    font-size: 1.4rem;
+    font-weight: 650;
+    letter-spacing: -.02em;
+    line-height: 1.2;
+}
+
+.auth-sub {
+    color: var(--muted);
+    font-size: .82rem;
+    margin-top: 2px;
+}
+
+.auth-step {
+    font-size: .72rem;
+    font-weight: 600;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+    color: var(--brand);
+    margin-bottom: 18px;
+}
+
+.auth-footer {
+    margin-top: 26px;
+    padding-top: 18px;
+    border-top: 1px solid var(--line);
+    text-align: center;
+    color: var(--muted);
+    font-size: .72rem;
+}
+
+/* Bouton de marque */
+.brand-btn {
+    height: 48px;
+    font-weight: 600 !important;
+    letter-spacing: .02em;
+    border-radius: 10px !important;
+    text-transform: none !important;
+    background: linear-gradient(135deg, var(--brand) 0%, var(--brand-dark) 100%) !important;
+    color: #FFF !important;
+    box-shadow: 0 10px 22px rgba(192, 0, 0, .26) !important;
+    transition: transform .12s ease, box-shadow .2s ease, filter .2s ease;
+}
+
+.brand-btn:hover:not(:disabled) {
+    filter: brightness(1.07);
+    box-shadow: 0 12px 26px rgba(192, 0, 0, .34) !important;
+}
+
+.brand-btn:active:not(:disabled) { transform: translateY(1px); }
+.brand-btn:disabled { filter: grayscale(.35) opacity(.75); box-shadow: none !important; }
+
+.brand-link {
+    text-transform: none !important;
+    color: var(--muted) !important;
+    font-weight: 500;
+}
+
+/* ------------------------------------------------------------------
+   Coquille applicative
+   ------------------------------------------------------------------ */
+
+.app-bar {
+    background: linear-gradient(90deg, #1B1D21 0%, #2A2D33 100%) !important;
+    border-bottom: 3px solid var(--brand);
+}
+
+.app-bar__mark {
+    width: 30px;
+    height: 30px;
+    border-radius: 9px;
+    background: linear-gradient(135deg, var(--brand) 0%, var(--brand-dark) 100%);
+    display: grid;
+    place-items: center;
+    font-weight: 700;
+    font-size: 15px;
+    margin-right: 12px;
+}
+
+.app-user {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 5px 12px 5px 5px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, .08);
+}
+
+.app-user__avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--brand);
+    display: grid;
+    place-items: center;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.page-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    box-shadow: 0 1px 3px rgba(17, 17, 26, .05);
 }

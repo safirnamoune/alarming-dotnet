@@ -1,8 +1,10 @@
 @inherits LayoutComponentBase
+@using global::App.Web.Theme
 
 @* Equivalent d'une page WebDev sans modele : utilise pour l'ecran de connexion *@
-<MudLayout>
-    <MudMainContent>
-        @Body
-    </MudMainContent>
-</MudLayout>
+<MudThemeProvider Theme="@AlarmingTheme.Instance" />
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+@Body

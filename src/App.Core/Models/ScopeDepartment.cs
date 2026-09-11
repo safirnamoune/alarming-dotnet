@@ -1,8 +1,10 @@
-namespace App.Core.Models;
+﻿namespace App.Core.Models;
 
 /// <summary>Resultat de REQ_Rch_Users_Scopes_View.</summary>
-public record ScopeDepartment(
-    int ScopeId,
-    string ScopeName,
-    int DeptId,
-    string DeptName);
+public class ScopeDepartment
+{
+    public short ScopeId { get; set; }
+    public string ScopeName { get; set; } = "";
+    public int DeptId { get; set; }
+    public string DeptName { get; set; } = "";
+}

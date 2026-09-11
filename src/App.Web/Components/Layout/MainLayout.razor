@@ -1,21 +1,53 @@
 @inherits LayoutComponentBase
+@using global::App.Web.Theme
 @inject UserSession Session
 
 @* Equivalent du modele de page WebDev (PAGEMOD_*) *@
+<MudThemeProvider Theme="@AlarmingTheme.Instance" />
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
 <MudLayout>
-    <MudAppBar Elevation="1">
-        <MudText Typo="Typo.h6">Alarming</MudText>
+    <MudAppBar Elevation="0" Class="app-bar" Dense="true">
+        <div class="app-bar__mark">A</div>
+        <MudText Typo="Typo.subtitle1" Style="font-weight:600;letter-spacing:-.01em;">
+            Alarming
+        </MudText>
+
         <MudSpacer />
+
         @if (Session.IsAuthenticated)
         {
-            <MudText Typo="Typo.body2" Class="mr-4">
-                @Session.UserName — @Session.ScopeName / @Session.TeamName
-            </MudText>
+            <div class="app-user">
+                <div class="app-user__avatar">@Initials</div>
+                <div style="line-height:1.15;">
+                    <div style="font-size:.8rem;font-weight:600;">@Session.UserName</div>
+                    <div style="font-size:.68rem;opacity:.7;">
+                        @Session.ScopeName &middot; @Session.TeamName
+                    </div>
+                </div>
+            </div>
         }
     </MudAppBar>
+
     <MudMainContent>
-        <MudContainer MaxWidth="MaxWidth.False" Class="pa-4">
+        <MudContainer MaxWidth="MaxWidth.False" Class="pa-6">
             @Body
         </MudContainer>
     </MudMainContent>
 </MudLayout>
+
+@code {
+    private string Initials
+    {
+        get
+        {
+            var name = Session.UserName ?? "";
+            var parts = name.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            if (parts.Length == 0) return "?";
+            if (parts.Length == 1) return parts[0][..1].ToUpperInvariant();
+            return (parts[0][..1] + parts[1][..1]).ToUpperInvariant();
+        }
+    }
+}

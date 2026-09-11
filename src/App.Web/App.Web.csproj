@@ -1,8 +1,9 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>c5ed1721-82b5-4c54-9b9d-0bff64db85fb</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="MudBlazor" Version="7.15.0" />

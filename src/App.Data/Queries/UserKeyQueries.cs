@@ -1,4 +1,4 @@
-using App.Core.Abstractions;
+﻿using App.Core.Abstractions;
 using App.Core.Models;
 using Dapper;
 using Npgsql;
@@ -14,7 +14,7 @@ public class UserKeyQueries(NpgsqlDataSource db) : IUserKeyQueries
         const string sql = """
             SELECT user_public_key  AS PublicKey,
                    user_private_key AS PrivateKey
-            FROM   alarming_schema.user_keys
+            FROM   alarming_schema.users_keys
             WHERE  userid = @UserId
             LIMIT  1
             """;
@@ -27,7 +27,7 @@ public class UserKeyQueries(NpgsqlDataSource db) : IUserKeyQueries
         string userId, UserKeys keys, CancellationToken ct = default)
     {
         const string sql = """
-            INSERT INTO alarming_schema.user_keys
+            INSERT INTO alarming_schema.users_keys
                    (userid, user_public_key, user_private_key)
             VALUES (@UserId, @PublicKey, @PrivateKey)
             """;
@@ -40,3 +40,4 @@ public class UserKeyQueries(NpgsqlDataSource db) : IUserKeyQueries
         });
     }
 }
+

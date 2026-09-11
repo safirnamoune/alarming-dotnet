@@ -1,121 +1,136 @@
-@* ------------------------------------------------------------------
-   Conversion iso-fonctionnelle de PAGE_Splash.
-
-   Les "plans" de CELL_Connect deviennent deux etats du composant :
-     plan 1 -> saisie du login
-     plan 2 -> selection du perimetre (scope) puis du groupe
-   ------------------------------------------------------------------ *@
-@page "/"
+﻿@page "/"
 @page "/login"
 @layout EmptyLayout
 @inject AuthService Auth
 @inject UserSession Session
 @inject NavigationManager Nav
 
-<MudPaper Class="pa-8 mx-auto mt-16" MaxWidth="420px" Elevation="4">
+<div class="auth-shell">
+    <div class="auth-card">
+        <div class="auth-card__bar"></div>
+        <div class="auth-card__body">
 
-    @if (_step == 1)
-    {
-        <MudText Typo="Typo.h5" Class="mb-6">Connexion</MudText>
+            <div class="auth-brand">
+                <div class="auth-brand__mark">A</div>
+                <div>
+                    <div class="auth-title">Alarming</div>
+                    <div class="auth-sub">@T("Supervision et gestion des incidents reseau", "Network incident monitoring and management")</div>
+                </div>
+            </div>
 
-        @* SAI_UtilisateurCode *@
-        <MudTextField @bind-Value="_login"
-                      Label="Utilisateur"
-                      Variant="Variant.Outlined"
-                      Immediate="true"
-                      OnKeyDown="OnKeyDown"
-                      Class="mb-3" />
-
-        @* SAI_UtilisateurPassword *@
-        <MudTextField @bind-Value="_password"
-                      Label="Mot de passe"
-                      InputType="InputType.Password"
-                      Variant="Variant.Outlined"
-                      Immediate="true"
-                      OnKeyDown="OnKeyDown"
-                      Class="mb-3" />
-
-        @* COMBO_Language *@
-        <MudSelect @bind-Value="_lang" T="string"
-                   Label="Langue"
-                   Variant="Variant.Outlined"
-                   Class="mb-6">
-            <MudSelectItem Value="@("fr")">Français</MudSelectItem>
-            <MudSelectItem Value="@("en")">English</MudSelectItem>
-        </MudSelect>
-
-        @* BTN_Submit_1st *@
-        <MudButton OnClick="SubmitAsync"
-                   Variant="Variant.Filled"
-                   Color="Color.Primary"
-                   FullWidth="true"
-                   Disabled="_busy">
-            @if (_busy)
+            @if (_step == 1)
             {
-                <MudProgressCircular Size="Size.Small" Indeterminate="true" Class="mr-2" />
-                <span>Connexion...</span>
+                <div class="auth-step">@T("Connexion", "Sign in")</div>
+
+                <MudTextField @bind-Value="_login"
+                              Label="@T("Utilisateur", "User")"
+                              Variant="Variant.Outlined"
+                              Margin="Margin.Dense"
+                              Immediate="true"
+                              Disabled="_busy"
+                              Adornment="Adornment.Start"
+                              AdornmentIcon="@Icons.Material.Outlined.Person"
+                              OnKeyDown="OnKeyDown"
+                              Class="mb-4" />
+
+                <MudTextField @bind-Value="_password"
+                              Label="@T("Mot de passe", "Password")"
+                              InputType="@(_showPassword ? InputType.Text : InputType.Password)"
+                              Variant="Variant.Outlined"
+                              Margin="Margin.Dense"
+                              Immediate="true"
+                              Disabled="_busy"
+                              Adornment="Adornment.End"
+                              AdornmentIcon="@(_showPassword ? Icons.Material.Outlined.VisibilityOff : Icons.Material.Outlined.Visibility)"
+                              OnAdornmentClick="@(() => _showPassword = !_showPassword)"
+                              OnKeyDown="OnKeyDown"
+                              Class="mb-4" />
+
+                <MudSelect @bind-Value="_lang" T="string"
+                           Label="@T("Langue", "Language")"
+                           Variant="Variant.Outlined"
+                           Margin="Margin.Dense"
+                           Disabled="_busy"
+                           Class="mb-6">
+                    <MudSelectItem Value="@("fr")">Francais</MudSelectItem>
+                    <MudSelectItem Value="@("en")">English</MudSelectItem>
+                </MudSelect>
+
+                <MudButton OnClick="SubmitAsync"
+                           Variant="Variant.Filled"
+                           FullWidth="true"
+                           Disabled="_busy"
+                           Class="brand-btn">
+                    @if (_busy)
+                    {
+                        <MudProgressCircular Size="Size.Small" Indeterminate="true" Class="mr-2" />
+                        <span>@T("Connexion...", "Signing in...")</span>
+                    }
+                    else
+                    {
+                        <span>@T("Se connecter", "Sign in")</span>
+                    }
+                </MudButton>
             }
             else
             {
-                <span>Se connecter</span>
-            }
-        </MudButton>
-    }
-    else
-    {
-        <MudText Typo="Typo.h6" Class="mb-6">Choisissez votre périmètre</MudText>
+                <div class="auth-step">@T("Perimetre", "Scope")</div>
 
-        @* COMBO_Scope *@
-        <MudSelect Value="_scope" T="string"
-                   ValueChanged="OnScopeChangedAsync"
-                   Label="Scope"
-                   Variant="Variant.Outlined"
-                   Class="mb-3">
-            @foreach (var s in _scopes)
+                <MudSelect Value="_scope" T="string"
+                           ValueChanged="OnScopeChangedAsync"
+                           Label="@T("Perimetre", "Scope")"
+                           Variant="Variant.Outlined"
+                           Margin="Margin.Dense"
+                           Class="mb-4">
+                    @foreach (var s in _scopes)
+                    {
+                        <MudSelectItem Value="@s">@s</MudSelectItem>
+                    }
+                </MudSelect>
+
+                <MudSelect @bind-Value="_group" T="string"
+                           Label="@T("Groupe", "Group")"
+                           Variant="Variant.Outlined"
+                           Margin="Margin.Dense"
+                           Disabled="_groups.Count <= 1"
+                           Class="mb-6">
+                    @foreach (var g in _groups)
+                    {
+                        <MudSelectItem Value="@g">@g</MudSelectItem>
+                    }
+                </MudSelect>
+
+                <MudButton OnClick="ConfirmScopeAsync"
+                           Variant="Variant.Filled"
+                           FullWidth="true"
+                           Disabled="_busy"
+                           Class="brand-btn">
+                    @T("Continuer", "Continue")
+                </MudButton>
+
+                <MudButton OnClick="BackToLogin"
+                           Variant="Variant.Text"
+                           FullWidth="true"
+                           Class="mt-2 brand-link">
+                    @T("Retour", "Back")
+                </MudButton>
+            }
+
+            @if (_error is not null)
             {
-                <MudSelectItem Value="@s">@s</MudSelectItem>
+                <MudAlert Severity="Severity.Error" Dense="true" Class="mt-4" Style="border-radius:10px;">
+                    @_error
+                </MudAlert>
             }
-        </MudSelect>
 
-        @* COMBO_Group - grisee quand un seul resultat (iso WebDev) *@
-        <MudSelect @bind-Value="_group" T="string"
-                   Label="Groupe"
-                   Variant="Variant.Outlined"
-                   Disabled="_groups.Count <= 1"
-                   Class="mb-6">
-            @foreach (var g in _groups)
-            {
-                <MudSelectItem Value="@g">@g</MudSelectItem>
-            }
-        </MudSelect>
+            <div class="auth-footer">Alarming &middot; migration .NET 9 &middot; phase 1</div>
 
-        @* BTN_Submit_2nd *@
-        <MudButton OnClick="ConfirmScopeAsync"
-                   Variant="Variant.Filled"
-                   Color="Color.Primary"
-                   FullWidth="true"
-                   Disabled="_busy">
-            Continuer
-        </MudButton>
-
-        @* BTN_Return *@
-        <MudButton OnClick="BackToLogin"
-                   Variant="Variant.Text"
-                   FullWidth="true"
-                   Class="mt-2">
-            Retour
-        </MudButton>
-    }
-
-    @if (_error is not null)
-    {
-        <MudAlert Severity="Severity.Error" Class="mt-4">@_error</MudAlert>
-    }
-
-</MudPaper>
+        </div>
+    </div>
+</div>
 
 @code {
-    private int _step = 1;                    // CELL_Connect..Plan
+    private int _step = 1;
     private string _login = "";
     private string _password = "";
     private string _lang = "fr";
@@ -125,8 +140,11 @@
     private List<string> _groups = [];
     private string? _error;
     private bool _busy;
+    private bool _showPassword;
 
-    // Equivalent de "Clic sur BTN_Submit_1st (serveur)"
+    // Remplace le mecanisme multilingue natif de WebDev (Nation()).
+    private string T(string fr, string en) => _lang == "fr" ? fr : en;
+
     private async Task SubmitAsync()
     {
         _busy = true;
@@ -147,7 +165,7 @@
                     _scopes = result.Scopes ?? [];
                     _scope  = _scopes.FirstOrDefault() ?? "";
                     await LoadGroupsAsync();
-                    _step = 2;      // CELL_Connect..Plan = 2
+                    _step = 2;
                     break;
 
                 default:
@@ -155,14 +173,17 @@
                     break;
             }
         }
+        catch (Exception ex)
+        {
+            _error = $"Erreur technique : {ex.GetType().Name} - {ex.Message}";
+            Console.WriteLine(ex);
+        }
         finally
         {
             _busy = false;
         }
     }
 
-    // Equivalent de "A chaque modification de COMBO_Scope (serveur)"
-    // qui appelle init_scopes_departements()
     private async Task OnScopeChangedAsync(string scope)
     {
         _scope = scope;
@@ -175,19 +196,21 @@
         _group  = _groups.FirstOrDefault() ?? "";
     }
 
-    // Equivalent de "Clic sur BTN_Submit_2nd (serveur)"
     private async Task ConfirmScopeAsync()
     {
         _busy = true;
+        _error = null;
         try
         {
             await Auth.ConfirmScopeAsync(_scope, _group);
-
-            // Mise a blanc des champs, comme dans le WebDev
             _login = "";
             _password = "";
-
             Nav.NavigateTo("/prince");
+        }
+        catch (Exception ex)
+        {
+            _error = $"Erreur technique : {ex.GetType().Name} - {ex.Message}";
+            Console.WriteLine(ex);
         }
         finally
         {
@@ -195,7 +218,6 @@
         }
     }
 
-    // Equivalent de "Clic sur BTN_Return" : CELL_Connect..Plan = 1
     private void BackToLogin()
     {
         _step = 1;

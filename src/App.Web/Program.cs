@@ -10,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // --- Blazor Server ---
 builder.Services.AddRazorComponents()
-                .AddInteractiveServerComponents();
+                .AddInteractiveServerComponents(o => o.DetailedErrors = true);
 
 // --- Bibliotheque UI ---
 builder.Services.AddMudServices();
@@ -55,4 +55,5 @@ app.MapRazorComponents<AppRoot>()
    .AddInteractiveServerRenderMode();
 
 app.Run();
+
 

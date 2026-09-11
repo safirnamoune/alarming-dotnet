@@ -1,4 +1,4 @@
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using App.Core.Abstractions;
 using App.Core.Models;
 using App.Core.Session;
@@ -59,7 +59,7 @@ public class AuthService(
         session.SessionId = await audit.LogAccessAsync(new AccessAudit(
             UserId:        u.UserId,
             Login:         login,
-            AccessMode:    "Windows",
+            AccessMode:    1,
             Etat:          1,                       // ProceduresServeur.gnConnecte
             DateDebut:     DateTime.Today,          // DateSys()
             HeureDebut:    DateTime.Now.TimeOfDay,  // HeureSys()
@@ -146,3 +146,4 @@ public class AuthService(
         session.UserPrivateKey = keys.PrivateKey;
     }
 }
+
