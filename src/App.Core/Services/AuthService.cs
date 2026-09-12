@@ -16,6 +16,19 @@ public class AuthService(
     IClientInfo client,
     UserSession session)
 {
+    /// <summary>
+    /// Valeur de audit_access.access_mode ecrite par le WebDev.
+    ///
+    /// Verifiee en base le 12/09/2026 : 689 lignes a 0, contre 2 a 1 qui sont
+    /// les traces de nos propres essais du 11/09. La valeur 1 avait ete deduite
+    /// a tort ; 0 est la valeur d'origine.
+    ///
+    /// A CONFIRMER : la signification exacte du champ reste inconnue. Aucune
+    /// autre valeur n'apparait dans l'historique, donc le WebDev ne semble
+    /// jamais en ecrire d'autre.
+    /// </summary>
+    private const short AccessModeWeb = 0;
+
     /// <summary>Equivalent de BTN_Submit_1st : premiere etape de connexion.</summary>
     public async Task<LoginResult> LoginAsync(
         string login, string password, CancellationToken ct = default)
@@ -59,7 +72,7 @@ public class AuthService(
         session.SessionId = await audit.LogAccessAsync(new AccessAudit(
             UserId:        u.UserId,
             Login:         login,
-            AccessMode:    1,
+            AccessMode:    AccessModeWeb,
             Etat:          1,                       // ProceduresServeur.gnConnecte
             DateDebut:     DateTime.Today,          // DateSys()
             HeureDebut:    DateTime.Now.TimeOfDay,  // HeureSys()
@@ -79,7 +92,12 @@ public class AuthService(
         if (rows.Count > 1)
             return LoginResult.NeedsScopeSelection(scopes);
 
-        // Cas d'un seul perimetre : acces direct
+        // Cas d'un seul perimetre : acces direct.
+        //
+        // Verifie en base le 12/09/2026 : users_scopes_view est VIDE et
+        // users_view renvoie scope_id / scope_name / deptid_scope /
+        // deptname_scope a NULL pour tous les comptes. Ces affectations sont
+        // donc nulles en pratique, et l'etape 2 ne se declenche jamais.
         session.ScopeId   = u.ScopeId;
         session.ScopeName = u.ScopeName;
         session.TeamId    = u.DeptIdScope;
